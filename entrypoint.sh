@@ -85,15 +85,20 @@ debug "=> Generating SHA-256 hash ..."
 HASH=$(fetch_and_hash "$ASSET_URL")
 HASH_ALT=$(fetch_and_hash "$ASSET_URL_ALT")
 
-debug "=> Fetching and substituting formula template ..."
-debug "  Version:           $VERSION"
+debug "=> Verifying formula data ..."
+debug "  Version: $VERSION"
 debug "  Asset:"
-debug "    URL:  $ASSET_URL"
-debug "    Hash: $HASH"
+debug "    URL:   $ASSET_URL"
+debug "    Hash:  $HASH"
 debug "  Alternative Asset:"
-debug "    URL:  $ASSET_URL_ALT"
-debug "    Hash: $HASH_ALT"
+debug "    URL:   $ASSET_URL_ALT"
+debug "    Hash:  $HASH_ALT"
 
+if [ -z "$VERSION" ]; then debug "Could not infer/read version!"; exit 1; fi
+if [ -z "$ASSET_URL" ]; then debug "Could not find main asset!"; exit 1; fi
+if [ -z "$ASSET_HASH" ]; then debug "Could not calculate main asset hash!"; exit 1; fi
+
+debug "=> Fetching and substituting formula template ..."
 export HOMEBREW_VERSION="$VERSION"
 export HOMEBREW_ASSET_URL="$ASSET_URL"
 export HOMEBREW_SHA256="$HASH"
