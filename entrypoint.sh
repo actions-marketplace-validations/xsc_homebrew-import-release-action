@@ -102,13 +102,14 @@ if [ -z "$VERSION" ]; then debug "Could not infer/read version!"; exit 1; fi
 if [ -z "$ASSET_URL" ]; then debug "Could not find main asset!"; exit 1; fi
 if [ -z "$HASH" ]; then debug "Could not calculate main asset hash!"; exit 1; fi
 
-debug "=> Fetching and substituting formula template ..."
+debug "=> Fetching and substituting formula template (-> $TARGET) ..."
 export HOMEBREW_VERSION="$VERSION"
 export HOMEBREW_ASSET_URL="$ASSET_URL"
 export HOMEBREW_SHA256="$HASH"
 export HOMEBREW_ASSET_URL_ALT="$ASSET_URL_ALT"
 export HOMEBREW_SHA256_ALT="$HASH_ALT"
 fetch_formula_template | envsubst > "$TARGET"
+cat "$TARGET"
 
 debug "=> Creating outputs ..."
 output "target"     "$TARGET"
