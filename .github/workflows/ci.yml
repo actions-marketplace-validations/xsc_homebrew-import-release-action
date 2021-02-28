@@ -10,7 +10,5 @@ jobs:
       - uses: ./
         with:
           target: into-docker.rb
-          version: 1.0.0
           repository: into-docker/into-docker
-          tag: v1.0.0
       - run: cat into-docker.rb

@@ -1,12 +1,15 @@
 #!/bin/sh -l
 
+TAG="$3"
+VERSION="$4"
+TEMPLATE_REF="$5"
+
 set -eu
 
 TARGET="$1"
-VERSION="$2"
-REPOSITORY="$3"
-TAG="$4"
-TEMPLATE_REF="$5"
+REPOSITORY="$2"
+
+# --- Defaults
 
 # --- Functions
 function debug() {
@@ -14,9 +17,15 @@ function debug() {
 }
 
 function get_release() {
-    curl --silent \
-        -H "Accept: application/vnd.github.v3+json" \
-        "https://api.github.com/repos/${REPOSITORY}/releases/tags/${TAG}"
+    if [ -z "$TAG" ]; then
+        curl --silent \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${REPOSITORY}/releases/latest"
+    else
+        curl --silent \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${REPOSITORY}/releases/tags/${TAG}"
+    fi
 }
 
 function get_asset_url() {
@@ -39,17 +48,28 @@ function fetch_and_hash() {
 
 function fetch_formula_template() {
     curl --silent -L \
-        "https://raw.githubusercontent.com/$REPOSITORY/$TEMPLATE_REF/.homebrew.rb"
+        "https://raw.githubusercontent.com/$REPOSITORY/${TEMPLATE_REF:-master}/.homebrew.rb"
+}
+
+function infer_version() {
+    local RELEASE="$1"
+    if [ -z "$VERSION" ]; then
+        local RELEASE_TAG=$(printf "%s" "$RELEASE" | jq -r '.tag_name')
+        printf "%s" "${RELEASE_TAG#"v"}"
+    else
+        printf "%s" "$VERSION"
+    fi
 }
 
 # --- Steps
 debug "Importing Homebrew Formula ..."
 
-debug "=> Querying release '$REPOSITORY@$TAG' ..."
+debug "=> Querying release '$REPOSITORY@${TAG:-latest}' ..."
 RELEASE=$(get_release)
 RELEASE_URL=$(get_release_url "$RELEASE")
 ASSET_URL=$(get_asset_url "$RELEASE" "macos-amd64")
 LINUX_ASSET_URL=$(get_asset_url "$RELEASE" "linux-amd64")
+VERSION=$(infer_version "$RELEASE")
 
 debug "=> Generating SHA-256 hash ..."
 HASH=$(fetch_and_hash "$ASSET_URL")
@@ -69,6 +89,6 @@ export HOMEBREW_ASSET_URL="$ASSET_URL"
 export HOMEBREW_SHA256="$HASH"
 export HOMEBREW_ASSET_URL_LINUX="$LINUX_ASSET_URL"
 export HOMEBREW_SHA256_LINUX="$LINUX_HASH"
-fetch_formula_template | envsubst > "$TARGET"
+fetch_formula_template | envsubst # > "$TARGET"
 
 exit 0
