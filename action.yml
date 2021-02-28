@@ -1,0 +1,31 @@
+name: "homebrew-import-release"
+description: "Import formulas into a Homebrew tap based on a Github release"
+branding:
+  icon: "git-pull-request"
+  color: "blue"
+inputs:
+  target:
+    description: "Target path for the formula"
+    required: true
+  version:
+    description: "Version of the Homebrew formula"
+    required: true
+  repository:
+    description: "Repository providing the formula template and the Github release to target"
+    required: true
+  tag:
+    description: "Release tag to target"
+    required: true
+  templateRef:
+    description: "Ref (branch/tag/commit) to use for the template lookup"
+    required: true
+    default: "master"
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - ${{ inputs.target }}
+    - ${{ inputs.version }}
+    - ${{ inputs.repository }}
+    - ${{ inputs.tag }}
+    - ${{ inputs.templateRef }}
