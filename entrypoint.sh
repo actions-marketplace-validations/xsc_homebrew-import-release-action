@@ -17,6 +17,10 @@ function debug() {
     echo "$@" 1>&2
 }
 
+function output() {
+    echo ::set-output name=$1::$2
+}
+
 function get_release() {
     if [ -z "$TAG" ]; then
         curl --silent \
@@ -105,5 +109,10 @@ export HOMEBREW_SHA256="$HASH"
 export HOMEBREW_ASSET_URL_ALT="$ASSET_URL_ALT"
 export HOMEBREW_SHA256_ALT="$HASH_ALT"
 fetch_formula_template | envsubst > "$TARGET"
+
+debug "=> Creating outputs ..."
+output "target"     "$TARGET"
+output "version"    "$VERSION"
+output "releaseUrl" "$RELEASE_URL"
 
 exit 0

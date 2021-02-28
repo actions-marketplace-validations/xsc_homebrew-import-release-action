@@ -43,7 +43,11 @@ based on Github releases and their assets.
 
 ## Outputs
 
-None.
+| Name         | Description                                                   |
+| :----------- | :------------------------------------------------------------ |
+| `target`     | Path to the output file (echoed).                             |
+| `version`    | Version of the formula (useful if inferred from the release). |
+| `releaseUrl` | URL pointing at the Github release.                           |
 
 ## Development
 
