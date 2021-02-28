@@ -89,6 +89,6 @@ export HOMEBREW_ASSET_URL="$ASSET_URL"
 export HOMEBREW_SHA256="$HASH"
 export HOMEBREW_ASSET_URL_LINUX="$LINUX_ASSET_URL"
 export HOMEBREW_SHA256_LINUX="$LINUX_HASH"
-fetch_formula_template | envsubst # > "$TARGET"
+fetch_formula_template | envsubst > "$TARGET"
 
 exit 0
