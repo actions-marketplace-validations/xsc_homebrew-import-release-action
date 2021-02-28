@@ -96,7 +96,7 @@ debug "    Hash:  $HASH_ALT"
 
 if [ -z "$VERSION" ]; then debug "Could not infer/read version!"; exit 1; fi
 if [ -z "$ASSET_URL" ]; then debug "Could not find main asset!"; exit 1; fi
-if [ -z "$ASSET_HASH" ]; then debug "Could not calculate main asset hash!"; exit 1; fi
+if [ -z "$HASH" ]; then debug "Could not calculate main asset hash!"; exit 1; fi
 
 debug "=> Fetching and substituting formula template ..."
 export HOMEBREW_VERSION="$VERSION"
