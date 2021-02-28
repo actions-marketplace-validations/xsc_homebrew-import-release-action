@@ -10,7 +10,11 @@ inputs:
   repository:
     description: "Repository providing the formula template and the Github release"
     required: true
-  templateRef:
+  template-path:
+    description: "Path to the template inside the repository"
+    required: true
+    default: ".homebrew.rb"
+  template-ref:
     description: "Ref (branch/tag/commit) to use for the template lookup"
     required: true
     default: "master"
