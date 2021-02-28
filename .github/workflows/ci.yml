@@ -11,4 +11,6 @@ jobs:
         with:
           target: into-docker.rb
           repository: into-docker/into-docker
+          selector: macos-amd64.zip
+          alt-selector: linux-amd64.zip
       - run: cat into-docker.rb

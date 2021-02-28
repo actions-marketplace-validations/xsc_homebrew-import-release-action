@@ -1,15 +1,16 @@
 #!/bin/sh -l
 
-TAG="$3"
-VERSION="$4"
-TEMPLATE_REF="$5"
+ALT_SELECTOR="$4"
+TAG="$5"
+VERSION="$6"
+TEMPLATE_PATH="$7"
+TEMPLATE_REF="$8"
 
 set -eu
 
 TARGET="$1"
 REPOSITORY="$2"
-
-# --- Defaults
+SELECTOR="$3"
 
 # --- Functions
 function debug() {
@@ -30,10 +31,19 @@ function get_release() {
 
 function get_asset_url() {
     local RELEASE="$1"
-    local MATCH="$2"
-    printf "%s" "$RELEASE" \
-        | jq -r '.assets[] | select(.name | contains("'$MATCH'")) | .browser_download_url' \
-        | head -n 1
+    local RESULT=""
+    shift
+
+    while [ $# -gt 0 -a -z "$RESULT" ]; do
+        if [ ! -z "$1" ]; then
+            RESULT=$(printf "%s" "$RELEASE" \
+                | jq -r '.assets[] | select(.name | contains("'$1'")) | .browser_download_url' \
+                | head -n 1)
+        fi
+        shift
+    done
+
+    printf "%s" "$RESULT"
 }
 
 function get_release_url() {
@@ -48,7 +58,7 @@ function fetch_and_hash() {
 
 function fetch_formula_template() {
     curl --silent -L \
-        "https://raw.githubusercontent.com/$REPOSITORY/${TEMPLATE_REF:-master}/.homebrew.rb"
+        "https://raw.githubusercontent.com/$REPOSITORY/${TEMPLATE_REF:-master}/${TEMPLATE_PATH:-.homebrew.rb}"
 }
 
 function infer_version() {
@@ -67,28 +77,28 @@ debug "Importing Homebrew Formula ..."
 debug "=> Querying release '$REPOSITORY@${TAG:-latest}' ..."
 RELEASE=$(get_release)
 RELEASE_URL=$(get_release_url "$RELEASE")
-ASSET_URL=$(get_asset_url "$RELEASE" "macos-amd64")
-LINUX_ASSET_URL=$(get_asset_url "$RELEASE" "linux-amd64")
+ASSET_URL=$(get_asset_url "$RELEASE" "$SELECTOR")
+ASSET_URL_ALT=$(get_asset_url "$RELEASE" "$ALT_SELECTOR")
 VERSION=$(infer_version "$RELEASE")
 
 debug "=> Generating SHA-256 hash ..."
 HASH=$(fetch_and_hash "$ASSET_URL")
-LINUX_HASH=$(fetch_and_hash "$LINUX_ASSET_URL")
+HASH_ALT=$(fetch_and_hash "$ASSET_URL_ALT")
 
 debug "=> Fetching and substituting formula template ..."
 debug "  Version:           $VERSION"
-debug "  Asset (MacOS):"
+debug "  Asset:"
 debug "    URL:  $ASSET_URL"
 debug "    Hash: $HASH"
-debug "  Asset (Linux):"
-debug "    URL:  $LINUX_ASSET_URL"
-debug "    Hash: $LINUX_HASH"
+debug "  Alternative Asset:"
+debug "    URL:  $ASSET_URL_ALT"
+debug "    Hash: $HASH_ALT"
 
 export HOMEBREW_VERSION="$VERSION"
 export HOMEBREW_ASSET_URL="$ASSET_URL"
 export HOMEBREW_SHA256="$HASH"
-export HOMEBREW_ASSET_URL_LINUX="$LINUX_ASSET_URL"
-export HOMEBREW_SHA256_LINUX="$LINUX_HASH"
+export HOMEBREW_ASSET_URL_ALT="$ASSET_URL_ALT"
+export HOMEBREW_SHA256_ALT="$HASH_ALT"
 fetch_formula_template | envsubst > "$TARGET"
 
 exit 0

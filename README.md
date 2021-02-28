@@ -15,13 +15,27 @@ based on Github releases and their assets.
     repository: into-docker/into-docker
 ```
 
+## Prerequisites
+
+- Existing Github release with corresponding tag (e.g. `v1.0.0`).
+- An asset attached to the release that matches a defined selector (see below).
+- A file `.homebrew.rb` in the repository that can utilise the following
+  variables for substitution:
+  - `HOMEBREW_VERSION`: version of the formula.
+  - `HOMEBREW_ASSET_URL`: URL to the matched release asset.
+  - `HOMEBREW_SHA256`: SHA-256 hash of the matched release asset.
+  - `HOMEBREW_ASSET_URL_ALT`: URL to the alternative release asset (e.g. Linux version).
+  - `HOMEBREW_SHA256_ALT`: SHA-256 hash of the alternative release asset (e.g. Linux version).
+
 ## Inputs
 
 | Name            | Required | Description                                                                        |
 | :-------------- | :------: | :--------------------------------------------------------------------------------- |
 | `target`        |   Yes    | Path to the output file.                                                           |
 | `repository`    |   Yes    | Repository to query for releases and the formula template.                         |
-| `template-path` |    No    | Path inside `repository` to use as the formula template.                           |
+| `selector`      |   Yes    | Substring that is contained within the main asset's filename.                      |
+| `alt-selector`  |    No    | Substring that is contained within the alternative asset's filename.               |
+| `template-path` |    No    | Path inside `repository` to use as the formula template (no leading `./`).         |
 | `template-ref`  |    No    | Ref (branch/tag/commit) to use for the template lookup.                            |
 | `tag`           |    No    | Specific release tag to use for creating the formula (defaults to latest release). |
 | `version`       |    No    | Override the formula version (defaults to using the tag minus a `v` prefix)        |

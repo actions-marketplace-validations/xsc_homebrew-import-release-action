@@ -10,6 +10,12 @@ inputs:
   repository:
     description: "Repository providing the formula template and the Github release"
     required: true
+  selector:
+    description: "Substring that's used to find the asset to include in the formula"
+    required: true
+  alt-selector:
+    description: "Substring that's used to find the alternative asset (e.g. a Linux artifact) to include in the formula"
+    required: false
   template-path:
     description: "Path to the template inside the repository"
     required: true
@@ -32,6 +38,9 @@ runs:
   args:
     - ${{ inputs.target }}
     - ${{ inputs.repository }}
+    - ${{ inputs.selector }}
+    - ${{ inputs.alt-selector }}
     - ${{ inputs.tag }}
     - ${{ inputs.version }}
-    - ${{ inputs.templateRef }}
+    - ${{ inputs.template-path }}
+    - ${{ inputs.template-ref }}
