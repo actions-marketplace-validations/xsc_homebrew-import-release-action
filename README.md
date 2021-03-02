@@ -9,7 +9,7 @@ based on Github releases and their assets.
 ## Usage
 
 ```yaml
-- uses: xsc/homebrew-import-release-action@v1
+- uses: xsc/homebrew-import-release-action@v2
   with:
     target: into-docker.rb
     repository: into-docker/into-docker
