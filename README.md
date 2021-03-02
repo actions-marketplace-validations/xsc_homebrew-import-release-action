@@ -20,8 +20,7 @@ based on Github releases and their assets.
 
 - Existing Github release with corresponding tag (e.g. `v1.0.0`).
 - An asset attached to the release that matches a defined selector (see below).
-- A file `.homebrew.rb` in the repository that can utilise the following
-  variables for substitution:
+- A template file that can use the following variables for substitution:
   - `HOMEBREW_VERSION`: version of the formula.
   - `HOMEBREW_ASSET_URL`: URL to the matched release asset.
   - `HOMEBREW_SHA256`: SHA-256 hash of the matched release asset.
