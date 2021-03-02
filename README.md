@@ -11,6 +11,7 @@ based on Github releases and their assets.
 ```yaml
 - uses: xsc/homebrew-import-release-action@v2
   with:
+    template: into-docker.template.rb
     target: into-docker.rb
     repository: into-docker/into-docker
     asset-selector: macos-amd64.zip
