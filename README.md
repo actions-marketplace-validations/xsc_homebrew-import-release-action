@@ -32,12 +32,11 @@ based on Github releases and their assets.
 
 | Name                 | Required | Description                                                                        |
 | :------------------- | :------: | :--------------------------------------------------------------------------------- |
-| `target`             |   Yes    | Path to the output file.                                                           |
+| `template`           |   Yes    | Local path to the template file.                                                   |
+| `target`             |   Yes    | Local path to the output file.                                                     |
 | `repository`         |   Yes    | Repository to query for releases and the formula template.                         |
 | `asset-selector`     |   Yes    | Substring that is contained within the main asset's filename.                      |
 | `alt-asset-selector` |    No    | Substring that is contained within the alternative asset's filename.               |
-| `template-path`      |    No    | Path inside `repository` to use as the formula template (no leading `./`).         |
-| `template-ref`       |    No    | Ref (branch/tag/commit) to use for the template lookup.                            |
 | `tag`                |    No    | Specific release tag to use for creating the formula (defaults to latest release). |
 | `version`            |    No    | Override the formula version (defaults to using the tag minus a `v` prefix)        |
 
