@@ -9,6 +9,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./
         with:
+          template: test/into-docker.template.rb
           target: into-docker.rb
           repository: into-docker/into-docker
           asset-selector: macos-amd64.zip

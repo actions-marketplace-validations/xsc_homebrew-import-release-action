@@ -1,16 +1,15 @@
 #!/bin/sh -l
 
-ALT_SELECTOR="$4"
-TAG="$5"
-VERSION="$6"
-TEMPLATE_PATH="$7"
-TEMPLATE_REF="$8"
+ALT_SELECTOR="$5"
+TAG="$6"
+VERSION="$7"
 
 set -eu
 
-TARGET="$1"
-REPOSITORY="$2"
-SELECTOR="$3"
+TEMPLATE="$1"
+TARGET="$2"
+REPOSITORY="$3"
+SELECTOR="$4"
 
 # --- Functions
 function debug() {
@@ -60,11 +59,6 @@ function fetch_and_hash() {
     fi
 }
 
-function fetch_formula_template() {
-    curl --silent -L \
-        "https://raw.githubusercontent.com/$REPOSITORY/${TEMPLATE_REF:-master}/${TEMPLATE_PATH:-.homebrew.rb}"
-}
-
 function infer_version() {
     local RELEASE="$1"
     if [ -z "$VERSION" ]; then
@@ -108,7 +102,7 @@ export HOMEBREW_ASSET_URL="$ASSET_URL"
 export HOMEBREW_SHA256="$HASH"
 export HOMEBREW_ASSET_URL_ALT="$ASSET_URL_ALT"
 export HOMEBREW_SHA256_ALT="$HASH_ALT"
-fetch_formula_template | envsubst > "$TARGET"
+cat "$TEMPLATE" | envsubst > "$TARGET"
 cat "$TARGET"
 
 debug "=> Creating outputs ..."

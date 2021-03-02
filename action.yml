@@ -4,6 +4,9 @@ branding:
   icon: "git-pull-request"
   color: "blue"
 inputs:
+  template:
+    description: "Local path to the template"
+    required: true
   target:
     description: "Target path for the formula"
     required: true
@@ -16,14 +19,6 @@ inputs:
   alt-asset-selector:
     description: "Substring that's used to find the alternative asset (e.g. a Linux artifact) to include in the formula"
     required: false
-  template-path:
-    description: "Path to the template inside the repository"
-    required: true
-    default: ".homebrew.rb"
-  template-ref:
-    description: "Ref (branch/tag/commit) to use for the template lookup"
-    required: true
-    default: "master"
   tag:
     description: "Release tag (defaults to latest)"
     required: false
@@ -36,11 +31,10 @@ runs:
   using: "docker"
   image: "Dockerfile"
   args:
+    - ${{ inputs.template }}
     - ${{ inputs.target }}
     - ${{ inputs.repository }}
     - ${{ inputs.asset-selector }}
     - ${{ inputs.alt-asset-selector }}
     - ${{ inputs.tag }}
     - ${{ inputs.version }}
-    - ${{ inputs.template-path }}
-    - ${{ inputs.template-ref }}
