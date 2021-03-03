@@ -17,6 +17,11 @@ based on Github releases and their assets.
     asset-selector: macos-amd64.zip
 ```
 
+Afterwards, you can use e.g. [create-pull-request][] to allow for a review of
+the changes. (I suspect you should not commit these directly.)
+
+[create-pull-request]: https://github.com/marketplace/actions/create-pull-request
+
 ## Prerequisites
 
 - Existing Github release with corresponding tag (e.g. `v1.0.0`).
