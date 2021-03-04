@@ -10,6 +10,7 @@ based on Github releases and their assets.
 
 ```yaml
 - uses: xsc/homebrew-import-release-action@v2
+  id: formula
   with:
     template: into-docker.template.rb
     target: into-docker.rb
@@ -18,7 +19,17 @@ based on Github releases and their assets.
 ```
 
 Afterwards, you can use e.g. [create-pull-request][] to allow for a review of
-the changes. (I suspect you should not commit these directly.)
+the changes:
+
+```yaml
+- uses: peter-evans/create-pull-request@v3
+  with:
+    title: "Update 'into-docker' formula (${{ steps.formula.outputs.version }})"
+    commit-message: "Formula: into-docker@${{ steps.formula.outputs.version }}"
+    branch: "update-formula/into-docker-${{ steps.formula.outputs.version }}"
+```
+
+(I suspect you should not commit these directly.)
 
 [create-pull-request]: https://github.com/marketplace/actions/create-pull-request
 
@@ -39,7 +50,7 @@ the changes. (I suspect you should not commit these directly.)
 | :------------------- | :------: | :--------------------------------------------------------------------------------- |
 | `template`           |   Yes    | Local path to the template file.                                                   |
 | `target`             |   Yes    | Local path to the output file.                                                     |
-| `repository`         |   Yes    | Repository to query for releases and the formula template.                         |
+| `repository`         |   Yes    | Repository to query for releases.                                                  |
 | `asset-selector`     |   Yes    | Substring that is contained within the main asset's filename.                      |
 | `alt-asset-selector` |    No    | Substring that is contained within the alternative asset's filename.               |
 | `tag`                |    No    | Specific release tag to use for creating the formula (defaults to latest release). |
